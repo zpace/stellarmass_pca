@@ -24,7 +24,7 @@ def write_log_file(plateifu, msg):
     if not os.path.exists(status_file_dir):
         os.makedirs(status_file_dir)
 
-    with open(os.path.join(status_file, 'w') as logf:
+    with open(os.path.join(status_file, 'w')) as logf:
         logf.write(msg)
 
 def summary_remaining(drpall, group_col='ifudesignsize'): 
