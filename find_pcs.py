@@ -50,7 +50,8 @@ from scipy.ndimage.filters import gaussian_filter1d
 from scipy.stats import entropy
 
 # statsmodels
-from statsmodels.nonparametric.kde import KDEUnivariate
+# removing to avoid scipy import error
+# from statsmodels.nonparametric.kde import KDEUnivariate
 
 eps = np.finfo(float).eps
 
@@ -1567,6 +1568,9 @@ class PCA_Result(object):
 
         # whether to use KDE to plot prior and/or posterior
         kde_prior, kde_post = kde
+        # OVERRIDING to disable KDE, because scipy import error
+        # when fixed, remove annotations below
+        kde_prior, kde_post = False, False
 
         q = self.pca.metadata[qty]
         w = self.w[:, ix[0], ix[1]]
@@ -1584,6 +1588,7 @@ class PCA_Result(object):
 
         # marginalized posterior
         if kde_post:
+            # DISABLED by above
             qgrid, postgrid = self.qty_kde(
                 q=q, weights=w, kernel='gau', bw='scott', fft=False)
             h = ax.plot(qgrid, postgrid, color='k', linestyle='-',
@@ -1600,6 +1605,7 @@ class PCA_Result(object):
 
         # marginalized prior
         if kde_prior:
+            # DISABLED by above
             qgrid, prigrid = self.qty_kde(
                 q=q, kernel='gau', bw='scott', fft=False)
             hprior = ax.plot(qgrid, prigrid, color='fuchsia', linestyle='-',
@@ -2424,7 +2430,7 @@ def setup_pca(base_dir, base_fname, fname=None,
         run_pca = False
 
     kspec_fname = os.path.join(
-        os.environ['STELLARMASS_PCA_DIR'], 'tremonti_cov/manga_covar_matrix.fit')
+        os.environ['PCAY_DIR'], 'tremonti_cov/manga_covar_matrix.fit')
     # shrink covariance matrix based on
     K_obs = cov_obs.ShrunkenCov.from_tremonti(kspec_fname, shrinkage=.005)
 
@@ -2773,8 +2779,8 @@ if __name__ == '__main__':
             pca_status.write_log_file(plateifu, repr(e))
             continue
         else:
-            print('{} completed successfully'.format(plateifu))
             pca_status.write_log_file(plateifu, 'SUCCESS')
+            print('{} completed successfully'.format(plateifu))
         finally:
             pass
     #'''

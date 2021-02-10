@@ -7,7 +7,7 @@ import utils as ut
 from warnings import simplefilter, catch_warnings
 
 data = t.Table.read(os.path.join(
-    os.environ['STELLARMASS_PCA_DIR'], 'data/indices.dat'), format='ascii')
+    os.environ['PCAY_DIR'], 'data/indices.dat'), format='ascii')
 for k in ['band', 'blue', 'red']:
     data[k] = [np.array(list(map(float, r.split()))) for r in data[k]]
 
