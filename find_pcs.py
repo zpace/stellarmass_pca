@@ -2312,6 +2312,8 @@ class PCA_Result(object):
         # initialize FITS hdulist
         # PrimaryHDU is identical to DRP 0th HDU
         hdulist = fits.HDUList([self.dered.drp_hdulist[0]])
+        # log version of PCAY (from importer.py)
+        hdulist[0].header['PCAYVER'] = pcay_ver
 
         if qtys == 'all':
             qtys = self.pca.metadata.colnames
@@ -2542,12 +2544,12 @@ def run_object(row, pca, K_obs, force_redo=False, fake=False, redo_fake=False,
             mockspec_ix=mockspec_ix, CSPs_dir=CSPs_basedir, fakedata_basedir=results_basedir,
             mockspec_fname=mockspec_fname, mocksfh_fname=mocksfh_fname, mpl_v=mpl_v,
             sky=sky)
-        figdir = os.path.join(results_basedir, 'results', plateifu)
+        figdir = os.path.join(results_basedir, plate)
 
     else:
         dered = MaNGA_deredshift.from_plateifu(
             plate=int(plate), ifu=int(ifu), MPL_v=mpl_v, row=row, kind=daptype)
-        figdir = os.path.join(results_basedir, 'results', plateifu)
+        figdir = os.path.join(results_basedir, plate)
         truth_sfh = None
         truth = None
 
@@ -2753,9 +2755,8 @@ if __name__ == '__main__':
                         title='zpres', loglike=True)
 
 
-                '''
                 if argsparsed.mock:
-                    pca_res = run_object(
+                    pca_res_f = run_object(
                         row=row, pca=pca, K_obs=K_obs, force_redo=argsparsed.clobbermock,
                         fake=False, redo_fake=argsparsed.clobbermock,
                         dered_method=dered_method, dered_kwargs=dered_kwargs,
@@ -2764,7 +2765,6 @@ if __name__ == '__main__':
                         pc_cov_method=pc_cov_method, mpl_v=mpl_v,
                         makefigs=argsparsed.figs, sky=skymodel)
                     pca_res_f.write_results('confident')
-                '''
 
         except Exception as e:
             exc_info = sys.exc_info()
