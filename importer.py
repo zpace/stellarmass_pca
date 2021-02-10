@@ -1,9 +1,9 @@
 import os, sys, matplotlib
 import faulthandler; faulthandler.enable()
 
-mpl_v = 'MPL-11'
-daptype = 'SPX-MILESHC-MASTARSSP'
-software_version = '1.1.0'
+mpl_v = 'MPL-11' # change with every MPL upgrade
+daptype = 'SPX-MILESHC-MASTARSSP' # change with every DAP type code
+software_version = '1.1.0' # change with every software version upgrade
 csp_basedir = os.environ['STELLARMASS_PCA_CSPBASE']
 manga_results_basedir = os.path.join(
     os.environ['STELLARMASS_PCA_RESULTSDIR'], software_version)
