@@ -1,8 +1,8 @@
 import os, sys, matplotlib
 import faulthandler; faulthandler.enable()
 
-mpl_v = 'MPL-8'
-daptype = 'SPX-MILESHC-MILESHC'
+mpl_v = 'MPL-11'
+daptype = 'SPX-MILESHC-MASTARSSP'
 csp_basedir = os.environ['STELLARMASS_PCA_CSPBASE']
 manga_results_basedir = os.environ['STELLARMASS_PCA_RESULTSDIR']
 mocks_results_basedir = os.path.join(
