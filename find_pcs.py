@@ -2307,7 +2307,7 @@ class PCA_Result(object):
 
         return P50, l_unc, u_unc, scale
 
-    def write_results(self, qtys='important', pc_info=True, title='res'):
+    def write_results(self, qtys='important', pc_info=True, loglike=False, title='res'):
 
         # initialize FITS hdulist
         # PrimaryHDU is identical to DRP 0th HDU
@@ -2401,6 +2401,11 @@ class PCA_Result(object):
         kld_hdu = fits.ImageHDU(self.kullback_leibler())
         kld_hdu.header['EXTNAME'] = 'KLD'
         hdulist.append(kld_hdu)
+
+	# make extension with model log-likelihoods
+	if loglike:
+	    loglike_hdu = fits.ImageHDU(np.log(self.w))
+            loglike_hdu.header['EXTNAME'] = 'LOGLIKE'
 
         fname = os.path.join(self.figdir, '{}_{}.fits'.format(self.objname, title))
 
@@ -2745,7 +2750,7 @@ if __name__ == '__main__':
                               'Dn4000', 'Hdelta_A', 'Mg_b', 'Ca_HK',
                               'F_1G', 'F_200M', 'uv_slope',
                               'tf', 'd1'],
-                        title='zpres')
+                        title='zpres', loglike=True)
 
 
                 '''
