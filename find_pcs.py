@@ -2404,9 +2404,9 @@ class PCA_Result(object):
         kld_hdu.header['EXTNAME'] = 'KLD'
         hdulist.append(kld_hdu)
 
-	# make extension with model log-likelihoods
-	if loglike:
-	    loglike_hdu = fits.ImageHDU(np.log(self.w))
+        # make extension with model log-likelihoods
+        if loglike:
+            loglike_hdu = fits.ImageHDU(np.log(self.w))
             loglike_hdu.header['EXTNAME'] = 'LOGLIKE'
 
         fname = os.path.join(self.figdir, '{}_{}.fits'.format(self.objname, title))
