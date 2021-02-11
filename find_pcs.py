@@ -2405,6 +2405,10 @@ class PCA_Result(object):
             norm_hdu = fits.ImageHDU(self.a_map)
             norm_hdu.header['EXTNAME'] = 'NORM'
             hdulist.append(norm_hdu)
+            
+            pc_prec_hdu = fits.ImageHDU(self.P_PC)
+            pc_prec_hdu.header['EXTNAME'] = 'CALPHA_PREC'
+            hdulist.append(pc_prec_hdu)
 
         kld_hdu = fits.ImageHDU(self.kullback_leibler())
         kld_hdu.header['EXTNAME'] = 'KLD'
@@ -2412,10 +2416,11 @@ class PCA_Result(object):
 
         # make extension with model log-likelihoods
         if loglike:
-            loglike_hdu = fits.ImageHDU(np.log(self.w))
+            loglike_hdu = fits.ImageHDU(np.log(self.w.astype('float32')))
             loglike_hdu.header['EXTNAME'] = 'LOGLIKE'
+            hdulist.append(loglike_hdu)
 
-        fname = os.path.join(self.figdir, '{}_{}.fits'.format(self.objname, title))
+        fname = os.path.join(self.figdir, '{}-{}.fits'.format(title, self.objname, title))
 
         hdulist.writeto(fname, overwrite=True)
 
@@ -2749,7 +2754,7 @@ if __name__ == '__main__':
                         pc_cov_method=pc_cov_method, mpl_v=mpl_v,
                         makefigs=argsparsed.figs)
                     # write results for general consumption
-                    pca_res.write_results(['MLi'])
+                    pca_res.write_results(['MLi'], title='mangapca')
                     # write results for me ("Kyle files")
 
                     pca_res.write_results(
@@ -2758,7 +2763,7 @@ if __name__ == '__main__':
                               'Dn4000', 'Hdelta_A', 'Mg_b', 'Ca_HK',
                               'F_1G', 'F_200M', 'uv_slope',
                               'tf', 'd1'],
-                        title='zpres', loglike=True)
+                        title='zpmangapca')
 
 
                 if argsparsed.mock:
