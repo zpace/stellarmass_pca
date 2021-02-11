@@ -2739,12 +2739,16 @@ if __name__ == '__main__':
         else:
             i += 1
 
-
+        # log your start by overwriting any existing log file
+        pca_status.write_log_file(plateifu, 'STARTING', clobber=True)
+        
         try:
             with catch_warnings():
                 simplefilter(warn_behav)
-
+                
                 if argsparsed.manga:
+                    pca_status.write_log_file(plateifu, 'Begin MaNGA analysis')
+                    pca_status.write_log_file(plateifu, 'Fitting with basis set')
                     pca_res = run_object(
                         row=row, pca=pca, K_obs=K_obs, force_redo=argsparsed.clobbermanga,
                         fake=False, redo_fake=False, dered_method=dered_method,
@@ -2753,10 +2757,15 @@ if __name__ == '__main__':
                         CSPs_basedir=csp_basedir, vdisp_wt=False,
                         pc_cov_method=pc_cov_method, mpl_v=mpl_v,
                         makefigs=argsparsed.figs)
+                    pca_status.write_log_file(plateifu, 'Fit complete')
+                    
                     # write results for general consumption
+                    pca_status.write_log_file(plateifu, 'Writing basic results')
                     pca_res.write_results(['MLi'], title='mangapca')
+                    pca_status.write_log_file(plateifu, 'Done writing basic results')
+                    
                     # write results for me ("Kyle files")
-
+                    pca_status.write_log_file(plateifu, 'Writing advanced results')
                     pca_res.write_results(
                         qtys=['MLi', 'MWA', 'sigma', 'logzsol', 
                               'tau_V mu',  'tau_V (1 - mu)',
@@ -2764,9 +2773,13 @@ if __name__ == '__main__':
                               'F_1G', 'F_200M', 'uv_slope',
                               'tf', 'd1'],
                         title='zpmangapca')
+                    pca_status.write_log_file(plateifu, 'Done writing advanced results')
+                    pca_status.write_log_file(plateifu, 'End MaNGA analysis')
 
 
                 if argsparsed.mock:
+                    pca_status.write_log_file(plateifu, 'Begin mocks analysis')
+                    pca_status.write_log_file(plateifu, 'Fitting with basis set')
                     pca_res_f = run_object(
                         row=row, pca=pca, K_obs=K_obs, force_redo=argsparsed.clobbermock,
                         fake=False, redo_fake=argsparsed.clobbermock,
@@ -2775,7 +2788,13 @@ if __name__ == '__main__':
                         CSPs_basedir=csp_basedir, vdisp_wt=False,
                         pc_cov_method=pc_cov_method, mpl_v=mpl_v,
                         makefigs=argsparsed.figs, sky=skymodel)
+                    pca_status.write_log_file(plateifu, 'Fit complete')
+                    
+                    pca_status.write_log_file(plateifu, 'Writing confident results')
                     pca_res_f.write_results('confident')
+                    pca_status.write_log_file(plateifu, 'Done writing confident results')
+                    
+                    pca_status.write_log_file(plateifu, 'End mocks analysis')
 
         except Exception as e:
             exc_info = sys.exc_info()
@@ -2787,5 +2806,5 @@ if __name__ == '__main__':
             pca_status.write_log_file(plateifu, 'SUCCESS')
             print('{} completed successfully'.format(plateifu))
         finally:
-            pass
+            pca_status.write_log_file(plateifu, 'ENDING GRACEFULLY')
     #'''

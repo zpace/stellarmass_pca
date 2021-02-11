@@ -1,5 +1,5 @@
 import os, sys, matplotlib
-import faulthandler; faulthandler.enable()
+#import faulthandler; faulthandler.enable()
 
 mpl_v = 'MPL-11' # change with every MPL upgrade
 daptype = 'SPX-MILESHC-MASTARSSP' # change with every DAP type code
