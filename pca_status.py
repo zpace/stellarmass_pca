@@ -68,17 +68,21 @@ def write_log_file(plateifu, msg, clobber=False):
         logf.write(msg_logged)
 
 def summary_remaining(drpall, group_col='ifudesignsize'): 
-    remaining = drpall[ 
-        ~np.array(list(map(log_file_exists, drpall['plateifu'])))] 
-    ifusize_grps = remaining.group_by(group_col) 
-    print('remaining galaxies by {}'.format(group_col)) 
-    for k, g in zip(ifusize_grps.groups.keys, ifusize_grps.groups): 
-        print(k[group_col], ':', len(g))
+    complete, hipri = zip(*list(map(log_indicates_complete, drpall['plateifu'])))
+    complete, hipri = np.array(complete), np.array(hipri)
+    drpall['complete'] = complete
+    drpall['hipri_rerun'] = hipri
+    drpall['lopri_rerun'] = (~hipri) & (~complete)
+    
+    runtab = drpall[group_col, 'complete', 'hipri_rerun', 'lopri_rerun']
+    runtab_group = runtab.group_by(group_col)
+    runtab_groupstats = runtab_group.groups.aggregate(np.sum)
+    print(runtab_groupstats)
 
 if __name__ == '__main__':
     import manga_tools as m
 
     drpall = m.load_drpall(mpl_v)
     drpall = drpall[(drpall['ifudesignsize'] > 0) * (drpall['nsa_z'] != -9999.)]
-    print(drpall)
+    #print(drpall)
     summary_remaining(drpall)
